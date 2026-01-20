@@ -48,7 +48,7 @@ function Converge.new(Constraint, Configuration: {
 end
 
 function Converge:IsCompleted(Direction): boolean
-	local target = self:_CalculateTarget(Direction)
+	local target = self:_GetTarget(Direction)
 
 	if (self.Constraint:IsA("PrismaticConstraint")) then
 		local distDiff = math.abs(self.Constraint.CurrentPosition - target)
@@ -69,7 +69,7 @@ function Converge:Wait(): boolean
 
 	task.delay(self.Timeout, function()
 		if (self._completed) then
-			return false
+			return
 		end
 
 		self._waiting = false
@@ -87,6 +87,8 @@ function Converge:Wait(): boolean
 		self._completed = true
 		return true
 	end
+
+	return false
 end
 
 function Converge:Completed(Callback)
@@ -114,7 +116,7 @@ function Converge:Reset()
 	self._completionTask = nil
 end
 
-function Converge:_CalculateTarget(Direction)
+function Converge:_GetTarget(Direction)
 	local target
 
 	if (self.Constraint:IsA("PrismaticConstraint")) then
